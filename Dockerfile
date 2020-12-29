@@ -44,11 +44,12 @@ RUN  mkdir /var/run/aerospike\
   && apt autoremove -y \
   && mkdir -p /var/log/aerospike 
   
-RUN pip install -e jupyter_contrib_nbextensions\
-  && jupyter contrib nbextension install --sys-prefix\
-  && jupyter nbextension enable toc2/main --sys-prefix\
-  && jupyter nbextension enable collapsible_headings/main --sys-prefix\
-  && jupyter nbextension enable scratchpad/main --sys-prefix
+RUN sudo apt-get install -y --no-install-recommends pip\
+  && sudo pip install -e jupyter_contrib_nbextensions\
+  && sudo jupyter contrib nbextension install --sys-prefix\
+  && sudo jupyter nbextension enable toc2/main --sys-prefix\
+  && sudo jupyter nbextension enable collapsible_headings/main --sys-prefix\
+  && sudo jupyter nbextension enable scratchpad/main --sys-prefix
 
 
 COPY aerospike /etc/init.d/
