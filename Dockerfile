@@ -44,8 +44,8 @@ RUN  mkdir /var/run/aerospike\
   && apt autoremove -y \
   && mkdir -p /var/log/aerospike 
   
-RUN sudo apt-get install -y --no-install-recommends python3-pip\
-  && sudo pip install -e jupyter_contrib_nbextensions\
+RUN apt-get install -y --no-install-recommends python3-pip\
+  && pip install -e jupyter_contrib_nbextensions\
   && sudo jupyter contrib nbextension install --sys-prefix\
   && sudo jupyter nbextension enable toc2/main --sys-prefix\
   && sudo jupyter nbextension enable collapsible_headings/main --sys-prefix\
