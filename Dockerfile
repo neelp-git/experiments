@@ -20,11 +20,6 @@ ENV HOME /home/${NB_USER}
 USER root
 RUN chown -R ${NB_UID} ${HOME}
 
-RUN sudo -E pip install -e jupyter_contrib_nbextensions\
-  && sudo -E jupyter contrib nbextension install --sys-prefix\
-  && sudo -E jupyter nbextension enable toc2/main --sys-prefix\
-  && sudo -E jupyter nbextension enable collapsible_headings/main --sys-prefix\
-  && sudo -E jupyter nbextension enable scratchpad/main --sys-prefix
 
 RUN  mkdir /var/run/aerospike\
   && apt-get update -y \
@@ -48,6 +43,13 @@ RUN  mkdir /var/run/aerospike\
   && apt-get purge -y \
   && apt autoremove -y \
   && mkdir -p /var/log/aerospike 
+  
+RUN sudo -E pip install -e jupyter_contrib_nbextensions\
+  && sudo -E jupyter contrib nbextension install --sys-prefix\
+  && sudo -E jupyter nbextension enable toc2/main --sys-prefix\
+  && sudo -E jupyter nbextension enable collapsible_headings/main --sys-prefix\
+  && sudo -E jupyter nbextension enable scratchpad/main --sys-prefix
+
 
 COPY aerospike /etc/init.d/
 RUN usermod -a -G aerospike ${NB_USER}
