@@ -1,6 +1,8 @@
 # Notebooks
 
 This area is for [Jupyter notebooks](https://jupyter.org/) in .ipynb format. Python and Java notebooks are currently supported by the kernel.
+
+
 Notebooks |     |    
 -------- | --- | ---
 Aerospike Notebooks Readme/Tips | [View](https://github.com/aerospike/aerospike-dev-notebooks.docker/tree/main/notebooks/readme_tips.ipynb) | [Launch](https://mybinder.org/v2/gh/aerospike/aerospike-dev-notebooks.docker/main?filepath=readme_tips.ipynb)
@@ -28,3 +30,4 @@ Implementing Read-Write Transactions with R-M-W Pattern | [View](https://github.
 
 
 _Copyright Aerospike Inc 2021_
+
