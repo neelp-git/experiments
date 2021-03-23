@@ -9,7 +9,7 @@ end
 -- note closures are used to access aggregate parameters such as bin
 local function rec_to_count_closure(bin)
     local function rec_to_count(rec) 
-    -- if bin specified: if bin exists in record return 1 else 0; if no bin specified, return 1
+    -- if bin is specified: if bin exists in record return 1 else 0; if no bin is specified, return 1
         return (not bin and 1) or ((rec[bin] and 1) or 0)
     end
     return rec_to_count
@@ -48,7 +48,7 @@ local function range_filter_closure(range_bin, range_low, range_high)
     return range_filter
 end
     
--- sum of range: sum(sum_bin) where range in [range_low, range_high]
+-- sum of range: sum(sum_bin) where range_bin in [range_low, range_high]
 function sum_range(stream, sum_bin, range_bin, range_low, range_high)
     return stream : filter(range_filter_closure(range_bin, range_low, range_high)) 
                     : map(rec_to_bin_value_closure(sum_bin)) : reduce(add_values)
@@ -103,8 +103,8 @@ end
 -- merge partial stream maps into one
 local function merge_stats(a, b)
     local ret = map()
-    ret["sum"] = (a["sum"] or 0) + (b["sum"] or 0)
-    ret["count"] = (a["count"] or 0) + (b["count"] or 0)
+    ret["sum"] = add_values(a["sum"], b["sum"])
+    ret["count"] = add_values(a["count"], b["count"])
     ret["min"] = get_min(a["min"], b["min"])
     ret["max"] = get_max(a["max"], b["max"])
     return ret
