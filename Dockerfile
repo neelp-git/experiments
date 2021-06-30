@@ -8,8 +8,8 @@ FROM jupyter/base-notebook:python-3.8.6
 
 USER root
 
-ENV AEROSPIKE_VERSION 5.2.0.11
-ENV AEROSPIKE_SHA256 717abae17e4432744569879dfb9996151555221b0b6e17a2920b1534eb2628c9
+ENV AEROSPIKE_VERSION 5.6.0.5
+ENV AEROSPIKE_SHA256 defa39f96d5068f69d1e4d187fa20d7f4095966c9eac80b1e1de30c15cd0c651
 ENV LOGFILE /var/log/aerospike/aerospike.log
 
 ARG NB_USER=jovyan
@@ -20,6 +20,7 @@ ENV HOME /home/${NB_USER}
 USER root
 RUN chown -R ${NB_UID} ${HOME}
 
+# install jupyter notebook extensions, and enable these extensions by default: table of content, collapsible headers, and scratchpad
 RUN pip install jupyter_contrib_nbextensions\
   && jupyter contrib nbextension install --sys-prefix\
   && jupyter nbextension enable toc2/main --sys-prefix\
@@ -32,13 +33,14 @@ RUN  mkdir /var/run/aerospike\
   && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9 \
   && apt-add-repository 'deb http://repos.azulsystems.com/ubuntu stable main' \
   && apt-get install -y --no-install-recommends build-essential wget lua5.2 gettext-base libldap-dev curl unzip python python3-pip python3-dev python3 zulu-11\
-  && wget "https://www.aerospike.com/artifacts/aerospike-server-community/${AEROSPIKE_VERSION}/aerospike-server-community-${AEROSPIKE_VERSION}-ubuntu20.04.tgz" -O aerospike-server.tgz \  
+  && wget "https://www.aerospike.com/artifacts/aerospike-server-enterprise/${AEROSPIKE_VERSION}/aerospike-server-enterprise-${AEROSPIKE_VERSION}-ubuntu20.04.tgz" -O aerospike-server.tgz \  
   && echo "$AEROSPIKE_SHA256 *aerospike-server.tgz" | sha256sum -c - \
   && mkdir aerospike \
   && tar xzf aerospike-server.tgz --strip-components=1 -C aerospike \
   && dpkg -i aerospike/aerospike-server-*.deb \
   && dpkg -i aerospike/aerospike-tools-*.deb \
   && pip install --no-cache-dir aerospike\
+  && pip install --no-cache-dir pymongo\
   && wget "https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip" -O ijava-kernel.zip\
   && unzip ijava-kernel.zip -d ijava-kernel \
   && python3 ijava-kernel/install.py --sys-prefix\
@@ -48,7 +50,6 @@ RUN  mkdir /var/run/aerospike\
   && apt-get purge -y \
   && apt autoremove -y \
   && mkdir -p /var/log/aerospike 
-  
 
 COPY aerospike /etc/init.d/
 RUN usermod -a -G aerospike ${NB_USER}
@@ -56,6 +57,7 @@ RUN usermod -a -G aerospike ${NB_USER}
 # Add the Aerospike configuration specific to this dockerfile
 COPY aerospike.template.conf /etc/aerospike/aerospike.template.conf
 COPY aerospike.conf /etc/aerospike/aerospike.conf
+COPY features.conf /etc/aerospike/features.conf
 
 RUN chown -R ${NB_UID} /etc/aerospike
 RUN chown -R ${NB_UID} /opt/aerospike
