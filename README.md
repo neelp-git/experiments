@@ -28,6 +28,6 @@ All Notebooks | [View All](https://github.com/aerospike/aerospike-dev-notebooks.
  | | | |
 **Spark  Notebooks** | [View All](https://github.com/aerospike-examples/interactive-notebooks/tree/main/notebooks/spark) 
  | | | | .
-&nbsp; Aerospike Connect for Spark Tutorial for Python | [View](https://github.com/aerospike/interactive-notebooks/tree/main/notebooks/spark/AerospikeSparkPython.ipynb)
-&nbsp; Aerospike Spark Connector Tutorial for Scala| [View](https://github.com/aerospike/interactive-notebooks/tree/main/notebooks/spark/AerospikeSparkScala.ipynb)
+&nbsp; Aerospike Connect for Spark Tutorial for Python | [View](https://github.com/aerospike-examples/interactive-notebooks/tree/main/notebooks/spark/AerospikeSparkPython.ipynb)
+&nbsp; Aerospike Spark Connector Tutorial for Scala| [View](https://github.com/aerospike-examples/interactive-notebooks/tree/main/notebooks/spark/AerospikeSparkScala.ipynb)
 
