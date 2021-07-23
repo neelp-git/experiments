@@ -25,4 +25,9 @@ All Notebooks | [View All](https://github.com/aerospike/aerospike-dev-notebooks.
 &nbsp; Aerospike Queries in Python¶ | [View](https://github.com/aerospike/aerospike-dev-notebooks.docker/tree/main/notebooks/python/query.ipynb) | [Launch](https://mybinder.org/v2/gh/aerospike/aerospike-dev-notebooks.docker/main?filepath=python/query.ipynb)
 &nbsp; Aerospike Notebooks Readme/Tips | [View](https://github.com/aerospike/aerospike-dev-notebooks.docker/tree/main/notebooks/python/readme_tips.ipynb) | [Launch](https://mybinder.org/v2/gh/aerospike/aerospike-dev-notebooks.docker/main?filepath=python/readme_tips.ipynb)
 &nbsp; Implementing Read-Write Transactions with R-M-W Pattern | [View](https://github.com/aerospike/aerospike-dev-notebooks.docker/tree/main/notebooks/python/transactions_rmw_pattern.ipynb) | [Launch](https://mybinder.org/v2/gh/aerospike/aerospike-dev-notebooks.docker/main?filepath=python/transactions_rmw_pattern.ipynb)
+ | | | |
+**Spark  Notebooks** | [View All](https://github.com/aerospike-examples/interactive-notebooks/tree/main/notebooks/spark) 
+ | | | | .
+&nbsp; Aerospike Connect for Spark Tutorial for Python | [View](https://github.com/aerospike-examples/interactive-notebooks/tree/main/notebooks/spark/AerospikeSparkPython.ipynb)
+&nbsp; Aerospike Spark Connector Tutorial for Scala| [View](https://github.com/aerospike-examples/interactive-notebooks/tree/main/notebooks/spark/AerospikeSparkScala.ipynb)
 
