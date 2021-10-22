@@ -24,7 +24,7 @@ RUN chown -R ${NB_UID} ${HOME}
 RUN mkdir /opt/spark-nb; cd /opt/spark-nb\
   && wget -qO- https://javadl.oracle.com/webapps/download/AutoDL?BundleId=245467_4d5417147a92418ea8b615e228bb6935 | tar -xvz\
   && wget -qO- https://archive.apache.org/dist/spark/spark-3.0.0/spark-3.0.0-bin-hadoop3.2.tgz | tar -xvz\
-  && pip install findspark\
+  && pip install findspark numpy pandas matplotlib sklearn\
   && wget https://docs.aerospike.com/artifacts/aerospike-spark/3.1.0/aerospike-spark-assembly-3.1.0.jar
 # END TEST
 
