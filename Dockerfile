@@ -35,11 +35,11 @@ RUN mkdir /opt/spark-nb; cd /opt/spark-nb\
 #  && npm install -g --unsafe-perm ijavascript\
 #  && ijsinstall --install=global
 
-RUN sudo apt-get update -y\
-  && apt-get install nodejs npm\
-  && npm config set prefix "/home/jovyan" \
-  && npm install -g ijavascript\
-  && ijsinstall
+#RUN sudo apt-get update -y\
+#  && apt-get install nodejs npm\
+#  && npm config set prefix "/home/jovyan" \
+#  && npm install -g ijavascript\
+#  && ijsinstall
 
 # c# kernel
 
