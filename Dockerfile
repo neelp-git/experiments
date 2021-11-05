@@ -36,20 +36,22 @@ RUN pip install jupyter-c-kernel\
   && install_c_kernel
   
 # go kernel
-RUN cd /usr/local\
-  && wget -qO- https://golang.org/dl/go1.17.3.linux-amd64.tar.gz  | tar -xvz \
-  && export PATH=$PATH:/usr/local/go/bin\
-  && env GO111MODULE=on go get github.com/gopherdata/gophernotes\
-  && mkdir -p ~/.local/share/jupyter/kernels/gophernotes\
-  && cd ~/.local/share/jupyter/kernels/gophernotes\
-  && cp "$(go env GOPATH)"/pkg/mod/github.com/gopherdata/gophernotes@v0.7.3/kernel/*  "."\
-  && chmod +w ./kernel.json\
-  && sed "s|gophernotes|$(go env GOPATH)/bin/gophernotes|" < kernel.json.in > kernel.json
+#RUN cd /usr/local\
+#  && wget -qO- https://golang.org/dl/go1.17.3.linux-amd64.tar.gz  | tar -xvz \
+#  && export PATH=$PATH:/usr/local/go/bin\
+#  && env GO111MODULE=on go get github.com/gopherdata/gophernotes\
+#  && mkdir -p ~/.local/share/jupyter/kernels/gophernotes\
+#  && cd ~/.local/share/jupyter/kernels/gophernotes\
+#  && cp "$(go env GOPATH)"/pkg/mod/github.com/gopherdata/gophernotes@v0.7.3/kernel/*  "."\
+#  && chmod +w ./kernel.json\
+#  && sed "s|gophernotes|$(go env GOPATH)/bin/gophernotes|" < kernel.json.in > kernel.json
 
 # js kernel
-#RUN apt-get install nodejs npm\
-#  && npm install -g --unsafe-perm ijavascript\
-#  && ijsinstall --install=global
+RUN apt-get update\
+  && apt-get install nodejs npm\
+  && npm install -g --unsafe-perm ijavascript\
+  && ijsinstall --install=global
+
 #RUN sudo apt-get update -y\
 #  && apt-get install nodejs npm\
 #  && npm config set prefix $HOME\
