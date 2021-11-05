@@ -29,7 +29,8 @@ RUN mkdir /opt/spark-nb; cd /opt/spark-nb\
   && wget https://docs.aerospike.com/artifacts/aerospike-spark/3.1.0/aerospike-spark-assembly-3.1.0.jar 
 
 # js kernel
-RUN apt-get install nodejs npm\
+RUN apt-get update -y\
+  && apt-get install nodejs npm\
   && npm install -g --unsafe-perm ijavascript\
   && ijsinstall --install=global
 
