@@ -32,7 +32,8 @@ RUN mkdir /opt/spark-nb; cd /opt/spark-nb\
 #RUN apt-get install nodejs npm\
 #  && npm install -g --unsafe-perm ijavascript\
 #  && ijsinstall --install=global
-RUN sudo apt-get install nodejs npm\
+RUN sudo apt-get update -y\
+  && apt-get install nodejs npm\
   && npm config set prefix $HOME\
   && npm install -g ijavascript\
   && ijsinstall
