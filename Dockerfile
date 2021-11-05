@@ -37,7 +37,7 @@ RUN pip install jupyter-c-kernel\
   
 # go kernel
 RUN cd /usr/local\
-  && wget -qO- https://golang.org/dl/go1.17.3.linux-amd64.tar.gz  | tar -xvz; rm go1.17.3.linux-amd64.tar.gz\
+  && wget -qO- https://golang.org/dl/go1.17.3.linux-amd64.tar.gz  | tar -xvz \
   && export PATH=$PATH:/usr/local/go/bin\
   && env GO111MODULE=on go get github.com/gopherdata/gophernotes\
   && mkdir -p ~/.local/share/jupyter/kernels/gophernotes\
