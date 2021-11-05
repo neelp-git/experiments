@@ -29,6 +29,18 @@ RUN mkdir /opt/spark-nb; cd /opt/spark-nb\
   && wget https://docs.aerospike.com/artifacts/aerospike-spark/3.1.0/aerospike-spark-assembly-3.1.0.jar 
 
 
+# js kernel
+#RUN apt-get update\
+#  && apt-get install nodejs npm\
+#  && npm install -g --unsafe-perm ijavascript\
+#  && ijsinstall --install=global
+
+RUN sudo apt-get update -y\
+  && apt-get install nodejs npm\
+  && npm config set prefix "/home/jovyan" \
+  && npm install -g ijavascript\
+  && ijsinstall
+
 # c# kernel
 
 # c kernel
@@ -46,18 +58,6 @@ RUN pip install jupyter-c-kernel\
 #  && chmod +w ./kernel.json\
 #  && sed "s|gophernotes|$(go env GOPATH)/bin/gophernotes|" < kernel.json.in > kernel.json
 
-# js kernel
-RUN apt-get update\
-  && apt-get install nodejs npm\
-  && npm install -g --unsafe-perm ijavascript\
-  && ijsinstall --install=global
-
-#RUN sudo apt-get update -y\
-#  && apt-get install nodejs npm\
-#  && npm config set prefix $HOME\
-#  && npm install -g ijavascript\
-#  && ijsinstall
-  
 # END TEST
 
 # install jupyter notebook extensions, and enable these extensions by default: table of content, collapsible headers, and scratchpad
