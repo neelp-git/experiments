@@ -33,8 +33,7 @@ RUN mkdir /opt/spark-nb; cd /opt/spark-nb\
 
 # c kernel
 RUN pip install jupyter-c-kernel\
-  && install_c_kernel\
-  && jupyter-notebook
+  && install_c_kernel
   
 # go kernel
 #RUN env GO111MODULE=on go get github.com/gopherdata/gophernotes\
