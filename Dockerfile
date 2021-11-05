@@ -21,11 +21,33 @@ USER root
 RUN chown -R ${NB_UID} ${HOME}
 
 # BEGIN TEST
+# spark notebook
 RUN mkdir /opt/spark-nb; cd /opt/spark-nb\
   && wget -qO- https://javadl.oracle.com/webapps/download/AutoDL?BundleId=245467_4d5417147a92418ea8b615e228bb6935 | tar -xvz\
   && wget -qO- https://archive.apache.org/dist/spark/spark-3.0.0/spark-3.0.0-bin-hadoop3.2.tgz | tar -xvz\
   && pip install findspark numpy pandas matplotlib sklearn\
-  && wget https://docs.aerospike.com/artifacts/aerospike-spark/3.1.0/aerospike-spark-assembly-3.1.0.jar  
+  && wget https://docs.aerospike.com/artifacts/aerospike-spark/3.1.0/aerospike-spark-assembly-3.1.0.jar 
+
+# go kernel
+RUN env GO111MODULE=on go get github.com/gopherdata/gophernotes\
+  && mkdir -p ~/.local/share/jupyter/kernels/gophernotes\
+  && cd ~/.local/share/jupyter/kernels/gophernotes\
+  && cp "$(go env GOPATH)"/pkg/mod/github.com/gopherdata/gophernotes@v0.7.3/kernel/*  "."\
+  && chmod +w ./kernel.json\
+  && sed "s|gophernotes|$(go env GOPATH)/bin/gophernotes|" < kernel.json.in > kernel.json
+
+# js kernel
+RUN apt-get install nodejs npm\
+  && npm install -g --unsafe-perm ijavascript\
+  && ijsinstall --install=global
+
+# c# kernel
+
+# c kernel
+RUN pip install jupyter-c-kernel\
+  && install_c_kernel\
+  && jupyter-notebook
+
 # END TEST
 
 # install jupyter notebook extensions, and enable these extensions by default: table of content, collapsible headers, and scratchpad
