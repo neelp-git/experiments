@@ -28,14 +28,6 @@ RUN mkdir /opt/spark-nb; cd /opt/spark-nb\
   && pip install findspark numpy pandas matplotlib sklearn\
   && wget https://docs.aerospike.com/artifacts/aerospike-spark/3.1.0/aerospike-spark-assembly-3.1.0.jar 
 
-# go kernel
-RUN env GO111MODULE=on go get github.com/gopherdata/gophernotes\
-  && mkdir -p ~/.local/share/jupyter/kernels/gophernotes\
-  && cd ~/.local/share/jupyter/kernels/gophernotes\
-  && cp "$(go env GOPATH)"/pkg/mod/github.com/gopherdata/gophernotes@v0.7.3/kernel/*  "."\
-  && chmod +w ./kernel.json\
-  && sed "s|gophernotes|$(go env GOPATH)/bin/gophernotes|" < kernel.json.in > kernel.json
-
 # js kernel
 RUN apt-get install nodejs npm\
   && npm install -g --unsafe-perm ijavascript\
@@ -47,6 +39,14 @@ RUN apt-get install nodejs npm\
 RUN pip install jupyter-c-kernel\
   && install_c_kernel\
   && jupyter-notebook
+  
+# go kernel
+#RUN env GO111MODULE=on go get github.com/gopherdata/gophernotes\
+#  && mkdir -p ~/.local/share/jupyter/kernels/gophernotes\
+#  && cd ~/.local/share/jupyter/kernels/gophernotes\
+#  && cp "$(go env GOPATH)"/pkg/mod/github.com/gopherdata/gophernotes@v0.7.3/kernel/*  "."\
+#  && chmod +w ./kernel.json\
+#  && sed "s|gophernotes|$(go env GOPATH)/bin/gophernotes|" < kernel.json.in > kernel.json
 
 # END TEST
 
