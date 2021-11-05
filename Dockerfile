@@ -29,10 +29,13 @@ RUN mkdir /opt/spark-nb; cd /opt/spark-nb\
   && wget https://docs.aerospike.com/artifacts/aerospike-spark/3.1.0/aerospike-spark-assembly-3.1.0.jar 
 
 # js kernel
-RUN apt-get update -y\
-  && apt-get install nodejs npm\
-  && npm install -g --unsafe-perm ijavascript\
-  && ijsinstall --install=global
+#RUN apt-get install nodejs npm\
+#  && npm install -g --unsafe-perm ijavascript\
+#  && ijsinstall --install=global
+RUN sudo apt-get install nodejs npm\
+  && npm config set prefix $HOME\
+  && npm install -g ijavascript\
+  && ijsinstall
 
 # c# kernel
 
