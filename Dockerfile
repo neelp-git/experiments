@@ -12,6 +12,7 @@ ENV AEROSPIKE_VERSION 5.6.0.5
 ENV AEROSPIKE_SHA256 defa39f96d5068f69d1e4d187fa20d7f4095966c9eac80b1e1de30c15cd0c651
 ENV LOGFILE /var/log/aerospike/aerospike.log
 
+
 ARG NB_USER=jovyan
 ARG NB_UID=1000
 ENV USER ${NB_USER}
@@ -21,13 +22,19 @@ USER root
 RUN chown -R ${NB_UID} ${HOME}
 
 # BEGIN TEST
+
+RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
+
+RUN sudo apt-get update\
+  && sudo apt-get install build-essential -y\
+  && sudo apt-get install git -y
+  
 # spark notebook
 RUN mkdir /opt/spark-nb; cd /opt/spark-nb\
   && wget -qO- https://javadl.oracle.com/webapps/download/AutoDL?BundleId=245467_4d5417147a92418ea8b615e228bb6935 | tar -xvz\
   && wget -qO- https://archive.apache.org/dist/spark/spark-3.0.0/spark-3.0.0-bin-hadoop3.2.tgz | tar -xvz\
   && pip install findspark numpy pandas matplotlib sklearn\
-  && wget https://docs.aerospike.com/artifacts/aerospike-spark/3.1.0/aerospike-spark-assembly-3.1.0.jar 
-
+  && wget https://docs.aerospike.com/artifacts/aerospike-spark/3.1.0/aerospike-spark-assembly-3.1.0.jar
 
 # js kernel
 #RUN apt-get update\
@@ -46,18 +53,28 @@ RUN mkdir /opt/spark-nb; cd /opt/spark-nb\
 # c kernel
 RUN pip install jupyter-c-kernel\
   && install_c_kernel
-  
-# go kernel
-#RUN cd /usr/local\
-#  && wget -qO- https://golang.org/dl/go1.17.3.linux-amd64.tar.gz  | tar -xvz \
-#  && export PATH=$PATH:/usr/local/go/bin\
-#  && env GO111MODULE=on go get github.com/gopherdata/gophernotes\
-#  && mkdir -p ~/.local/share/jupyter/kernels/gophernotes\
-#  && cd ~/.local/share/jupyter/kernels/gophernotes\
-#  && cp "$(go env GOPATH)"/pkg/mod/github.com/gopherdata/gophernotes@v0.7.3/kernel/*  "."\
-#  && chmod +w ./kernel.json\
-#  && sed "s|gophernotes|$(go env GOPATH)/bin/gophernotes|" < kernel.json.in > kernel.json
 
+# go kernel
+RUN wget -O go.tgz https://golang.org/dl/go1.17.3.linux-amd64.tar.gz\
+  && tar -C /usr/local -xzf go.tgz
+ENV PATH=$PATH:/usr/local/go/bin
+ENV GO111MODULE=on
+RUN go install github.com/gopherdata/gophernotes@v0.7.3\
+  && go get github.com/aerospike/aerospike-client-go/v5
+RUN mkdir -p ~/.local/share/jupyter/kernels/gophernotes\
+  && cd ~/.local/share/jupyter/kernels/gophernotes\
+  && cp $(go env GOPATH)/pkg/mod/github.com/gopherdata/gophernotes@v0.7.3/kernel/* "."\
+  && sed "s_gophernotes_$(go env GOPATH)/bin/gophernotes_" <kernel.json.in >kernel.json
+#fix dependencies
+RUN cd $(go env GOPATH)/pkg/mod/github.com/aerospike/aerospike-client-go/v5@v5.6.0\
+  && go get -u\
+  && go mod tidy
+RUN cd $(go env GOPATH)/pkg/mod/github.com/go-zeromq/zmq4@v0.13.0\
+  && go get -u\
+  && go mod tidy
+RUN cd $(go env GOPATH)/pkg/mod/github.com/gopherdata/gophernotes@v0.7.3\  
+  && go get -u\
+  && go mod tidy
 # END TEST
 
 # install jupyter notebook extensions, and enable these extensions by default: table of content, collapsible headers, and scratchpad
@@ -66,6 +83,8 @@ RUN pip install jupyter_contrib_nbextensions\
   && jupyter nbextension enable toc2/main --sys-prefix\
   && jupyter nbextension enable collapsible_headings/main --sys-prefix\
   && jupyter nbextension enable scratchpad/main --sys-prefix
+  
+RUN sudo apt install vim -y
 
 RUN  mkdir /var/run/aerospike\
   && apt-get update -y \
@@ -89,8 +108,8 @@ RUN  mkdir /var/run/aerospike\
   && rm -rf /opt/aerospike/lib/java \
   && apt-get purge -y \
   && apt autoremove -y \
-  && mkdir -p /var/log/aerospike 
-
+  && mkdir -p /var/log/aerospike  
+  
 COPY aerospike /etc/init.d/
 RUN usermod -a -G aerospike ${NB_USER}
 
@@ -121,5 +140,7 @@ RUN  fix-permissions /home/${NB_USER}/
 # I don't know why this has to be like this 
 # rather than overiding
 COPY entrypoint.sh /usr/local/bin/start-notebook.sh
+#I had to do this to get the container to launch, not sure what I was doing wrong
+RUN chmod +x /usr/local/bin/start-notebook.sh
 WORKDIR /home/${NB_USER}/notebooks  
 USER ${NB_USER}
