@@ -12,6 +12,7 @@ ENV AEROSPIKE_VERSION 5.6.0.5
 ENV AEROSPIKE_SHA256 defa39f96d5068f69d1e4d187fa20d7f4095966c9eac80b1e1de30c15cd0c651
 ENV LOGFILE /var/log/aerospike/aerospike.log
 
+
 ARG NB_USER=jovyan
 ARG NB_UID=1000
 ENV USER ${NB_USER}
@@ -54,16 +55,26 @@ RUN pip install jupyter-c-kernel\
   && install_c_kernel
 
 # go kernel
-RUN cd /usr/local\
-  && wget -qO- https://golang.org/dl/go1.17.3.linux-amd64.tar.gz  | tar -xvz \
-  && export PATH=$PATH:/usr/local/go/bin\
-  && env GO111MODULE=on go get github.com/gopherdata/gophernotes\
-  && go get github.com/aerospike/aerospike-client-go\
-  && mkdir -p ~/.local/share/jupyter/kernels/gophernotes\
+RUN wget -O go.tgz https://golang.org/dl/go1.17.3.linux-amd64.tar.gz\
+  && tar -C /usr/local -xzf go.tgz
+ENV PATH=$PATH:/usr/local/go/bin
+ENV GO111MODULE=on
+RUN go install github.com/gopherdata/gophernotes@v0.7.3\
+  && go get github.com/aerospike/aerospike-client-go/v5
+RUN mkdir -p ~/.local/share/jupyter/kernels/gophernotes\
   && cd ~/.local/share/jupyter/kernels/gophernotes\
-  && cp /home/jovyan/go/pkg/mod/github.com/gopherdata/gophernotes@v0.7.3/kernel/*  "."\
-  && sed 's_gophernotes_/home/jovyan/go/bin/gophernotes_' <kernel.json.in >kernel.json
-  
+  && cp $(go env GOPATH)/pkg/mod/github.com/gopherdata/gophernotes@v0.7.3/kernel/* "."\
+  && sed "s_gophernotes_$(go env GOPATH)/bin/gophernotes_" <kernel.json.in >kernel.json
+#fix dependencies
+RUN cd $(go env GOPATH)/pkg/mod/github.com/aerospike/aerospike-client-go/v5@v5.6.0\
+  && go get -u\
+  && go mod tidy
+RUN cd $(go env GOPATH)/pkg/mod/github.com/go-zeromq/zmq4@v0.13.0\
+  && go get -u\
+  && go mod tidy
+RUN cd $(go env GOPATH)/pkg/mod/github.com/gopherdata/gophernotes@v0.7.3\  
+  && go get -u\
+  && go mod tidy
 # END TEST
 
 # install jupyter notebook extensions, and enable these extensions by default: table of content, collapsible headers, and scratchpad
@@ -73,6 +84,8 @@ RUN pip install jupyter_contrib_nbextensions\
   && jupyter nbextension enable collapsible_headings/main --sys-prefix\
   && jupyter nbextension enable scratchpad/main --sys-prefix
   
+RUN sudo apt install vim -y
+
 RUN  mkdir /var/run/aerospike\
   && apt-get update -y \
   && apt-get install software-properties-common dirmngr gpg-agent -y --no-install-recommends\
