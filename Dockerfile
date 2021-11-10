@@ -23,6 +23,7 @@ RUN chown -R ${NB_UID} ${HOME}
 
 # BEGIN TEST
 
+# timezone needs to be set before nodejs kernel
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
 
 RUN sudo apt-get update\
@@ -37,16 +38,11 @@ RUN mkdir /opt/spark-nb; cd /opt/spark-nb\
   && wget https://docs.aerospike.com/artifacts/aerospike-spark/3.1.0/aerospike-spark-assembly-3.1.0.jar
 
 # js kernel
-#RUN apt-get update\
-#  && apt-get install nodejs npm\
-#  && npm install -g --unsafe-perm ijavascript\
-#  && ijsinstall --install=global
-
-#RUN sudo apt-get update -y\
-#  && apt-get install nodejs npm\
-#  && npm config set prefix "/home/jovyan" \
-#  && npm install -g ijavascript\
-#  && ijsinstall
+RUN sudo apt-get install -y nodejs npm\
+  && sudo npm install -g npm\
+  && sudo npm cache clean -f\
+  && sudo npm install -g n\
+  && sudo n stable
 
 # c# kernel
 
@@ -60,8 +56,8 @@ RUN wget -O go.tgz https://golang.org/dl/go1.17.3.linux-amd64.tar.gz\
 ENV PATH=$PATH:/usr/local/go/bin
 ENV GO111MODULE=on
 RUN go install github.com/gopherdata/gophernotes@v0.7.3\
-  && go get github.com/aerospike/aerospike-client-go/v5
-RUN mkdir -p ~/.local/share/jupyter/kernels/gophernotes\
+  && go get github.com/aerospike/aerospike-client-go/v5\
+  && mkdir -p ~/.local/share/jupyter/kernels/gophernotes\
   && cd ~/.local/share/jupyter/kernels/gophernotes\
   && cp $(go env GOPATH)/pkg/mod/github.com/gopherdata/gophernotes@v0.7.3/kernel/* "."\
   && sed "s_gophernotes_$(go env GOPATH)/bin/gophernotes_" <kernel.json.in >kernel.json
@@ -83,8 +79,6 @@ RUN pip install jupyter_contrib_nbextensions\
   && jupyter nbextension enable toc2/main --sys-prefix\
   && jupyter nbextension enable collapsible_headings/main --sys-prefix\
   && jupyter nbextension enable scratchpad/main --sys-prefix
-  
-RUN sudo apt install vim -y
 
 RUN  mkdir /var/run/aerospike\
   && apt-get update -y \
@@ -109,7 +103,7 @@ RUN  mkdir /var/run/aerospike\
   && apt-get purge -y \
   && apt autoremove -y \
   && mkdir -p /var/log/aerospike  
-  
+
 COPY aerospike /etc/init.d/
 RUN usermod -a -G aerospike ${NB_USER}
 
@@ -135,7 +129,16 @@ RUN echo -e "Aerospike Python Client `pip show aerospike|grep Version|sed -e 's/
 RUN echo -e "Aerospike Java Client 5.0.0" >> /home/${NB_USER}/notebooks/README.md
 
 COPY jupyter_notebook_config.py /home/${NB_USER}/
+
 RUN  fix-permissions /home/${NB_USER}/
+
+# register js kernel
+# these have to run near the end or else they error out
+RUN npm install -g --unsafe-perm zeromq\
+  && npm install -g --unsafe-perm ijavascript\
+  && npm install express\
+  && npm install aerospike\
+  && ijsinstall --spec-path=full --working-dir=${HOME}
 
 # I don't know why this has to be like this 
 # rather than overiding
@@ -144,3 +147,5 @@ COPY entrypoint.sh /usr/local/bin/start-notebook.sh
 RUN chmod +x /usr/local/bin/start-notebook.sh
 WORKDIR /home/${NB_USER}/notebooks  
 USER ${NB_USER}
+
+
