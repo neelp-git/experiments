@@ -51,30 +51,30 @@ RUN mkdir /opt/spark-nb; cd /opt/spark-nb\
 # c# kernel
 
 # c kernel
-RUN pip install jupyter-c-kernel\
-  && install_c_kernel
+#RUN pip install jupyter-c-kernel\
+#  && install_c_kernel
 
 # go kernel
-RUN wget -O go.tgz https://golang.org/dl/go1.17.3.linux-amd64.tar.gz\
-  && tar -C /usr/local -xzf go.tgz
-ENV PATH=$PATH:/usr/local/go/bin
-ENV GO111MODULE=on
-RUN go install github.com/gopherdata/gophernotes@v0.7.3\
-  && go get github.com/aerospike/aerospike-client-go/v5
-RUN mkdir -p ~/.local/share/jupyter/kernels/gophernotes\
-  && cd ~/.local/share/jupyter/kernels/gophernotes\
-  && cp $(go env GOPATH)/pkg/mod/github.com/gopherdata/gophernotes@v0.7.3/kernel/* "."\
-  && sed "s_gophernotes_$(go env GOPATH)/bin/gophernotes_" <kernel.json.in >kernel.json
+#RUN wget -O go.tgz https://golang.org/dl/go1.17.3.linux-amd64.tar.gz\
+#  && tar -C /usr/local -xzf go.tgz
+#ENV PATH=$PATH:/usr/local/go/bin
+#ENV GO111MODULE=on
+#RUN go install github.com/gopherdata/gophernotes@v0.7.3\
+#  && go get github.com/aerospike/aerospike-client-go/v5
+#RUN mkdir -p ~/.local/share/jupyter/kernels/gophernotes\
+#  && cd ~/.local/share/jupyter/kernels/gophernotes\
+#  && cp $(go env GOPATH)/pkg/mod/github.com/gopherdata/gophernotes@v0.7.3/kernel/* "."\
+#  && sed "s_gophernotes_$(go env GOPATH)/bin/gophernotes_" <kernel.json.in >kernel.json
 #fix dependencies
-RUN cd $(go env GOPATH)/pkg/mod/github.com/aerospike/aerospike-client-go/v5@v5.6.0\
-  && go get -u\
-  && go mod tidy
-RUN cd $(go env GOPATH)/pkg/mod/github.com/go-zeromq/zmq4@v0.13.0\
-  && go get -u\
-  && go mod tidy
-RUN cd $(go env GOPATH)/pkg/mod/github.com/gopherdata/gophernotes@v0.7.3\  
-  && go get -u\
-  && go mod tidy
+#RUN cd $(go env GOPATH)/pkg/mod/github.com/aerospike/aerospike-client-go/v5@v5.6.0\
+#  && go get -u\
+#  && go mod tidy
+#RUN cd $(go env GOPATH)/pkg/mod/github.com/go-zeromq/zmq4@v0.13.0\
+#  && go get -u\
+#  && go mod tidy
+#RUN cd $(go env GOPATH)/pkg/mod/github.com/gopherdata/gophernotes@v0.7.3\  
+#  && go get -u\
+#  && go mod tidy
 # END TEST
 
 # install jupyter notebook extensions, and enable these extensions by default: table of content, collapsible headers, and scratchpad
@@ -98,6 +98,7 @@ RUN  mkdir /var/run/aerospike\
   && tar xzf aerospike-server.tgz --strip-components=1 -C aerospike \
   && dpkg -i aerospike/aerospike-server-*.deb \
   && dpkg -i aerospike/aerospike-tools-*.deb \
+  && dbpkg -i asloader-2.3.5.ubuntu20.04.amd64.deb \
   && pip install --no-cache-dir aerospike\
   && pip install --no-cache-dir pymongo\
   && wget "https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip" -O ijava-kernel.zip\
