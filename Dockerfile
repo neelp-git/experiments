@@ -98,7 +98,8 @@ RUN  mkdir /var/run/aerospike\
   && tar xzf aerospike-server.tgz --strip-components=1 -C aerospike \
   && dpkg -i aerospike/aerospike-server-*.deb \
   && dpkg -i aerospike/aerospike-tools-*.deb \
-  && dbpkg -i asloader-2.3.5.ubuntu20.04.amd64.deb \
+  && wget https://github.com/aerospike/aerospike-loader/releases/asloader-2.3.5.ubuntu20.04.amd64.deb -O aerospike/asloader.deb \  
+  && dbpkg -i aerospike/asloader.deb \
   && pip install --no-cache-dir aerospike\
   && pip install --no-cache-dir pymongo\
   && wget "https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip" -O ijava-kernel.zip\
