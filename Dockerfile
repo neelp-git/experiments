@@ -89,7 +89,7 @@ RUN pip install jupyter_contrib_nbextensions\
   && jupyter nbextension enable collapsible_headings/main --sys-prefix\
   && jupyter nbextension enable scratchpad/main --sys-prefix
   
-RUN sudo apt install vim -y
+#RUN sudo apt install vim -y
 
 RUN  mkdir /var/run/aerospike\
   && apt-get update -y \
