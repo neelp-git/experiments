@@ -23,11 +23,11 @@ RUN chown -R ${NB_UID} ${HOME}
 
 # BEGIN TEST
 
-RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
+#RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
 
-RUN sudo apt-get update\
-  && sudo apt-get install build-essential -y\
-  && sudo apt-get install git -y
+#RUN sudo apt-get update\
+#  && sudo apt-get install build-essential -y\
+#  && sudo apt-get install git -y
   
 # spark notebook
 RUN mkdir /opt/spark-nb; cd /opt/spark-nb\
@@ -75,6 +75,11 @@ RUN mkdir /opt/spark-nb; cd /opt/spark-nb\
 #RUN cd $(go env GOPATH)/pkg/mod/github.com/gopherdata/gophernotes@v0.7.3\  
 #  && go get -u\
 #  && go mod tidy
+
+# asloader
+#  && wget https://github.com/aerospike/aerospike-loader/releases/asloader-2.3.5.ubuntu20.04.amd64.deb -O aerospike/asloader.deb \  
+#  && dbpkg -i aerospike/asloader.deb \
+
 # END TEST
 
 # install jupyter notebook extensions, and enable these extensions by default: table of content, collapsible headers, and scratchpad
@@ -98,8 +103,6 @@ RUN  mkdir /var/run/aerospike\
   && tar xzf aerospike-server.tgz --strip-components=1 -C aerospike \
   && dpkg -i aerospike/aerospike-server-*.deb \
   && dpkg -i aerospike/aerospike-tools-*.deb \
-  && wget https://github.com/aerospike/aerospike-loader/releases/asloader-2.3.5.ubuntu20.04.amd64.deb -O aerospike/asloader.deb \  
-  && dbpkg -i aerospike/asloader.deb \
   && pip install --no-cache-dir aerospike\
   && pip install --no-cache-dir pymongo\
   && wget "https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip" -O ijava-kernel.zip\
