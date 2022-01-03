@@ -58,7 +58,7 @@ class CCTxnModel(Resource):
         
         return jsonify({'normal_prob': result[0][0], 
                 'fraud_prob': result[0][1],
-                'prediction':'normal' if result[1] < 0.5  else 'fraud'})
+                'prediction':'no fraud' if result[1] < 0.5  else 'fraud'})
 
 # add resource for processing requests
 api.add_resource(CCTxnModel, '/')
