@@ -83,14 +83,15 @@ def initialize():
     
     # Initialize Spark
     # directory where spark notebook requisites are installed
-    #SPARK_NB_DIR = '/home/jovyan/notebooks/spark'
     SPARK_NB_DIR = '/opt/spark-nb'
-    SPARK_HOME = SPARK_NB_DIR + '/spark-3.0.3-bin-hadoop3.2'
+    SPARK_DIR = 'spark-dir-link'
+    SPARK_HOME = SPARK_NB_DIR + '/' + SPARK_DIR
+    AEROSPIKE_JAR = 'aerospike-jar-link'
+    AEROSPIKE_JAR_PATH = SPARK_NB_DIR + '/' + AEROSPIKE_JAR
     # IP Address or DNS name for one host in your Aerospike cluster
     AS_HOST ="localhost"
     # Name of one of your namespaces. Type 'show namespaces' at the aql prompt if you are not sure
     AS_NAMESPACE = "test" 
-    AEROSPIKE_SPARK_JAR_VERSION="3.2.0"
     AS_PORT = 3000 # Usually 3000, but change here if not
     AS_CONNECTION_STRING = AS_HOST + ":"+ str(AS_PORT)
     # Next we locate the Spark installation - this will be found using the SPARK_HOME environment 
@@ -99,7 +100,6 @@ def initialize():
     findspark.init(SPARK_HOME)
     # Aerospike Spark Connector related settings
     import os 
-    AEROSPIKE_JAR_PATH= "aerospike-spark-assembly-"+AEROSPIKE_SPARK_JAR_VERSION+".jar"
     os.environ["PYSPARK_SUBMIT_ARGS"] = '--jars ' + SPARK_NB_DIR + '/' + AEROSPIKE_JAR_PATH + ' pyspark-shell'
     # imports
     import pyspark
